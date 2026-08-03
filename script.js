@@ -2,6 +2,18 @@
 const items = document.querySelectorAll('.item');
 const container = document.querySelector('.items');
 
+// Adjust container to display items in a grid
+container.style.display = 'grid';
+container.style.gridTemplateColumns = 'repeat(5, 200px)';
+container.style.gap = '0';
+container.style.overflow = 'hidden';
+container.style.whiteSpace = 'normal';
+
+// Reset item styles for grid layout
+items.forEach(item => {
+  item.style.display = 'flex';
+});
+
 items.forEach(item => {
   let isDragging = false;
   let startX, startY;
@@ -20,6 +32,7 @@ items.forEach(item => {
     item.style.top = (rect.top - containerRect.top) + 'px';
     item.style.cursor = 'grabbing';
     item.style.margin = '0';
+    item.style.zIndex = '1000';
     
     // Store starting positions
     startX = e.clientX;
@@ -47,7 +60,7 @@ items.forEach(item => {
     const itemHeight = item.offsetHeight;
     
     const minLeft = 0;
-    const maxLeft = container.scrollWidth - itemWidth;
+    const maxLeft = container.clientWidth - itemWidth;
     const minTop = 0;
     const maxTop = container.clientHeight - itemHeight;
     
@@ -62,7 +75,7 @@ items.forEach(item => {
   document.addEventListener('mouseup', () => {
     if (isDragging) {
       isDragging = false;
-      item.style.cursor = 'pointer';
+      item.style.cursor = 'grab';
     }
   });
 });
