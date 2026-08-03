@@ -10,24 +10,22 @@ items.forEach(item => {
   item.addEventListener('mousedown', (e) => {
     isDragging = true;
     
+    // Get initial position before making absolute
+    const rect = item.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    
     // Make item draggable
     item.style.position = 'absolute';
+    item.style.left = (rect.left - containerRect.left + container.scrollLeft) + 'px';
+    item.style.top = (rect.top - containerRect.top) + 'px';
     item.style.cursor = 'grabbing';
+    item.style.margin = '0';
     
-    // Get initial positions
+    // Store starting positions
     startX = e.clientX;
     startY = e.clientY;
-    
-    // Get or set initial position
-    if (!item.style.left) {
-      const rect = item.getBoundingClientRect();
-      const containerRect = container.getBoundingClientRect();
-      item.style.left = (rect.left - containerRect.left) + 'px';
-      item.style.top = (rect.top - containerRect.top) + 'px';
-    }
-    
-    initialLeft = parseInt(item.style.left) || 0;
-    initialTop = parseInt(item.style.top) || 0;
+    initialLeft = parseInt(item.style.left);
+    initialTop = parseInt(item.style.top);
     
     e.preventDefault();
   });
@@ -44,15 +42,14 @@ items.forEach(item => {
     let newLeft = initialLeft + deltaX;
     let newTop = initialTop + deltaY;
     
-    // Get container bounds
-    const containerRect = container.getBoundingClientRect();
-    const itemRect = item.getBoundingClientRect();
-    
     // Apply constraints to keep item within container
+    const itemWidth = item.offsetWidth;
+    const itemHeight = item.offsetHeight;
+    
     const minLeft = 0;
-    const maxLeft = container.scrollWidth - itemRect.width;
+    const maxLeft = container.scrollWidth - itemWidth;
     const minTop = 0;
-    const maxTop = container.clientHeight - itemRect.height;
+    const maxTop = container.clientHeight - itemHeight;
     
     newLeft = Math.max(minLeft, Math.min(newLeft, maxLeft));
     newTop = Math.max(minTop, Math.min(newTop, maxTop));
